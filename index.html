@@ -11,6 +11,9 @@
     <p>This is a plain JavaScript prototype page.</p>
 
     <script>
+        function speak(text) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          speechSynthesis.speak(utterance);
         // Simple JS example
         console.log('Page loaded');
     </script>
