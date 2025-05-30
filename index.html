@@ -1,24 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8" />
-    <title>SpeakBoard Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pictograma ARASAAC</title>
 </head>
 
 <body>
-    <h1>Hello, SpeakBoard!</h1>
-    <p>This is a plain JavaScript prototype page.</p>
-    <button onclick="speak('Hello!')">Say Hello</button>
+    <h1 id="title">Pictogramas ARASAAC</h1>
+    <div id="board-container"></div>
+    <p id="label"></p>
 
     <script>
-        function speak(text) {
-          const utterance = new SpeechSynthesisUtterance(text);
-          speechSynthesis.speak(utterance);
-        }
-        // Simple JS example
-        console.log('Page loaded');
+        const board = [2462, 2434, 2578];
+        const container = document.getElementById('board-container');
+
+        board.forEach(id => {
+
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const imageUrl = `https://static.arasaac.org/pictograms/${id}/${id}_500.png`;
+            const apiUrl = `https://api.arasaac.org/v1/pictograms/es/${id}`;
+
+            // Create elements
+            const img = document.createElement('img');
+            const label = document.createElement('p');
+
+            img.src = imageUrl;
+            img.alt = "Cargando imagen...";
+            img.style.width = '150px';
+            img.style.cursor = 'pointer';
+
+            card.appendChild(img);
+            card.appendChild(label);
+
+            container.appendChild(card);
+
+            // Fetch pictogram keyword
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    const palabra = data.keywords[0].keyword;
+                    label.textContent = palabra;
+
+                    img.addEventListener('click', () => {
+                        const tts = new SpeechSynthesisUtterance(palabra);
+                        tts.lang = 'es-ES';
+                        speechSynthesis.speak(tts);
+                    });
+                })
+                .catch(() => {
+                    label.textContent = 'No se pudo cargar.';
+
+                });
+        });
     </script>
+</body>
 </body>
 
 </html>
